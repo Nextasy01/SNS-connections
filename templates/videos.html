@@ -1,0 +1,88 @@
+<script src="/js/import_button.js"></script>
+<div class="container-fluid py-5">
+    <div class="row"> 
+  {{ if .youtube_videos }}
+      <div class="col-sm-5 py-4 px-5 mx-4 bg-light rounded-2 overflow-auto" style="height: fit-content; max-height: 700px; width: min-content;">
+        <div class="row gy-5">
+          <img src="https://logos-world.net/wp-content/uploads/2020/04/YouTube-Logo-700x394.png" alt="YouTube videos">
+          <div class="row w-auto">
+            <div class="col mt-2">
+              <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="YouTubeToggle">
+              <label class="form-check-label" for="toggleCheckboxes">Select</label>
+            </div>
+            <div class="col btnArea" id="YouTubeImport">
+            </div>
+          </div>
+         </div>
+          {{ range $video := .youtube_videos }}
+          <div class="col-6 w-auto">
+                <div class="card mb-auto shadow-sm">
+                    <div class="card-body">
+                    <iframe width="300" height="200" src="https://www.youtube.com/embed/{{$video.VideoId}}" title="{{$video.Title}}" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; 
+                    gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <div class="row checkboxArea" style="display: none;">
+                        <div class="col" style="max-width: fit-content;">
+                          <input class="form-check-input checkbox" type="checkbox" id="checkbox{{$video.VideoId}}">
+                        </div>
+                        <div class="col px-0">
+                          <label class="form-check-label checkbox-label fst-italic" for="checkbox{{$video.VideoId}}" style="display: none;">Selected!</label>
+                        </div>
+                      </div>
+                    <p class="card-text">
+                        <p  style="text-align: end; margin-bottom: 0;">{{$video.PublishedAt.Format "2006-02-01"}}</p>
+                        <h4>{{$video.Title}}</h4>
+                        <p>{{$video.Description}}</p>
+                    </p>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+      </div>
+  {{ end }}
+  
+  {{ if .instagram_videos }}
+    <div class="col-sm-5 py-4 mx-5 px-5 rounded-2 overflow-auto" style="width: min-content; height: fit-content; max-height: 700px; background-image: linear-gradient(to top, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5 );">
+        <div class="row gy-5">
+          <img src="https://1000logos.net/wp-content/uploads/2017/02/ig-logo-768x256.png" alt="Instagram Videos">
+          <div class="row w-auto">
+            <div class="col mt-2">
+              <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="InstaToggle">
+              <label class="form-check-label" for="toggleCheckboxes">Select</label>
+              </div>
+            </div>
+            <div class="col btnArea" id="InstaImport">
+            </div>
+          </div>
+          {{ range $video := .instagram_videos }}
+          <div class="col-6 w-auto">
+                <div class="card mb-auto shadow-sm">
+                    <div class="card-body" style="background-color: #6ed594b0;">
+                        <video width="300" height="200" controls style="background-color: black;">
+                          <source src="{{$video.MediaUrl}}" type="video/mp4">
+                        </video>           
+                        <div class="row checkboxArea" style="display: none;">
+                          <div class="col" style="max-width: fit-content;">
+                            <input class="form-check-input checkbox" type="checkbox" id="checkbox{{$video.VideoId}}">
+                          </div>
+                          <div class="col px-0">
+                            <label class="form-check-label checkbox-label fst-italic" for="checkbox{{$video.VideoId}}" style="display: none;">Selected!</label>
+                          </div>
+                        </div>
+                      <p class="card-text mb-0">
+                        <p style="text-align: end; margin-bottom: 0;">{{$video.Timestamp.Format "2006-02-01"}}</p>
+                          <h4>{{$video.Caption}}</h4>
+                      </p>
+                    </div>
+                </div>
+              </div>
+            {{end}}
+       </div>
+      </div>
+  {{end}}
+    </div>
+  </div>
+  

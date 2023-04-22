@@ -1,0 +1,38 @@
+{{ template "header.html" }}
+{{ template "navbar.html" . }}
+
+    {{ if .error }}
+   <h2>{{ .error }}</h2> 
+   {{ end }}
+   {{ if .isIndex}}
+   <div class="d-flex flex-column align-items-center" style="margin-top: 15%;">
+    <h2 class="text-white">Connect your Google and Facebook accounts to access your videos from YouTube and Instagram</h2>
+    <div class="row" style="margin-top: 3%;">
+      <div class="col">
+      <form method="get" action="/instagram/auth">
+        <button type="submit">
+          <img src="svg/facebook_button.png" alt="Connect with Facebook" width="380" height="92">
+        </button>
+      </form>
+    </div>
+    <div class="col">
+      <form method="get" action="/google/authg">
+        <button type="submit">
+          <img src="svg/google_button.png" alt="Connect with Google">
+        </button>
+      </form> 
+    </div>
+    </div>
+  </div>
+   {{ end }}
+   
+
+  {{ template "videos.html" . }}
+
+ {{ if .google}}
+ <p>{{ .google }}</p>
+ {{ end }}
+ {{ if .instagram}}
+ <p>{{ .instagram }}</p>
+ {{ end }}
+{{ template "footer.html" }}

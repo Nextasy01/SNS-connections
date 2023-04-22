@@ -1,0 +1,32 @@
+{{ template "login-header.html" }}
+<body>
+    <header>
+        <h1>Register to System</h1>
+    </header>
+    <main>
+        {{ if .reg_success }}
+        <h2>Registration is completed! Please go to <a href="/login">login</a> page to enter the system.</h2>
+        {{ else }}
+        {{ if .reg_failure }}
+        <p id="error_msg">User with such email already exists!</p>
+        {{ end }}
+        <form id="login_form" class="form_class" action="register" method="post">
+            <div class="form_div">
+                <label>Email:</label>
+                <input class="field_class" name="email" type="text" placeholder="Enter your email" autofocus>
+                <label>Name:</label>
+                <input class="field_class" name="username" type="text" placeholder="Enter your name" autofocus>
+                <label>Password:</label>
+                <input id="pass" class="field_class" name="password" type="password" placeholder="Enter your password">
+                <label>Confirm password:</label>
+                <input id="pass" class="field_class" name="password_txt" type="password" placeholder="Confirm password">
+                <button class="submit_class" type="submit" form="login_form">Register</button>
+            </div>
+        </form>
+        {{end}}
+    </main>
+    <footer>
+        <p>It's under development by Akmal Ergashev</p>
+    </footer>
+</body>
+</html>

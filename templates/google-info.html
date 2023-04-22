@@ -1,0 +1,11 @@
+{{ template "header.html" }}
+{{ template "navbar.html"}}
+
+<h2>Your Google Credentials</h2>
+<body>
+    <div>
+        <img src="{{ .ProfilePic }}">
+        <p> {{ .Username }} </p>
+        <p> {{ .Email }} </p>
+    </div>
+{{ template "footer.html"}}

@@ -1,0 +1,27 @@
+{{ template "login-header.html" }}
+<body>
+    <header>
+        <h1>Login to System</h1>
+    </header>
+    <main>
+        <form id="login_form" class="form_class" action="login" method="post">
+            <div class="form_div">
+                <label>Login:</label>
+                <input class="field_class" name="username" type="text" placeholder="Enter your username" autofocus>
+                <label>Password:</label>
+                <input id="pass" class="field_class" name="password" type="password" placeholder="Enter your password">
+                {{ if .error }}
+                <p id="error_msg">Wrong Credentials! Please enter valid username and password!</p>
+                {{ end }}
+                <button class="submit_class" type="submit" form="login_form">Enter</button>
+            </div>
+            <div class="info_div">
+                <p>First time?<a href="/register">Then register!</a></p>
+            </div>
+        </form>
+    </main>
+    <footer>
+        <p>It's under development by Akmal Ergashev</p>
+    </footer>
+</body>
+</html>
