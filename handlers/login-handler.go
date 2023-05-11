@@ -28,10 +28,17 @@ func NewLoginInput(username, password string) LoginInput {
 
 func (l *LoginHandler) Login(c *gin.Context) {
 
+	// _, err := c.Cookie("token")
+	// if err == nil {
+	// 	c.SetCookie("error", "you need to log out first!", 10, "/view", c.Request.URL.Hostname(), false, true)
+	// 	c.Abort()
+	// 	return
+	// }
+
 	input := NewLoginInput(c.PostForm("username"), c.PostForm("password"))
 
 	if err := c.ShouldBind(&input); err != nil {
-		c.HTML(http.StatusBadRequest, "login.html", gin.H{"error": "username or password is incorrect"})
+		c.HTML(http.StatusBadRequest, "login.html", gin.H{"error": err})
 		return
 	}
 
@@ -46,14 +53,18 @@ func (l *LoginHandler) Login(c *gin.Context) {
 		c.HTML(http.StatusBadRequest, "login.html", gin.H{"error": "username or password is incorrect"})
 		return
 	}
-
 	c.SetCookie("token", token, 24*3600, "/", c.Request.URL.Hostname(), false, true)
-
-	location := url.URL{Path: "/"}
-
-	c.Redirect(http.StatusMovedPermanently, location.RequestURI())
+	c.Header("Cache-Control", "no-cache, private, max-age=0")
+	location := url.URL{Path: "/view/"}
+	c.Redirect(http.StatusFound, location.RequestURI())
 }
 
 func LoginView(c *gin.Context) {
+	// _, err := c.Cookie("token")
+	// if err == nil {
+	// 	c.SetCookie("error", "you need to log out first!", 10, "/view", c.Request.URL.Hostname(), false, true)
+	// 	c.Abort()
+	// 	return
+	// }
 	c.HTML(http.StatusOK, "login.html", nil)
 }

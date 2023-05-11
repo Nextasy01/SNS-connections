@@ -17,9 +17,10 @@ import (
 
 func main() {
 	server := gin.Default()
+	server.Static("/view/css", "./templates/css")
 	server.Static("/css", "./templates/css")
-	server.Static("/js", "./templates/js")
-	server.Static("/svg", "./templates/svg")
+	server.Static("/view/js", "./templates/js")
+	server.Static("/view/svg", "./templates/svg")
 
 	server.LoadHTMLGlob("templates/*.html")
 
@@ -27,15 +28,15 @@ func main() {
 	public.Use(middlewares.AlreadyLoggedIn())
 	routes.PublicRoutes(public)
 
-	private := server.Group("/")
+	private := server.Group("/view")
 	private.Use(middlewares.AuthorizeJWT(), middlewares.CheckInstagramAuth(), middlewares.CheckGoogleAuth())
 	routes.PrivateRoutes(private)
 
-	google := server.Group("/google")
+	google := private.Group("/google")
 	google.Use(middlewares.CheckGoogleAuth())
 	routes.GoogleRoutes(google)
 
-	instagram := server.Group("/instagram")
+	instagram := private.Group("/instagram")
 	instagram.Use(middlewares.CheckInstagramAuth())
 	routes.InstagramRoutes(instagram)
 

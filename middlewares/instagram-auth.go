@@ -18,8 +18,8 @@ func CheckInstagramAuth() gin.HandlerFunc {
 		}
 		instagram_acc, err := routes.DB.GetInstaAccByUserId(user_id)
 		if err != nil {
-			ctx.Next()
 			log.Println(err)
+			ctx.Next()
 			return
 		}
 		id, err := ctx.Cookie("instagram_id")

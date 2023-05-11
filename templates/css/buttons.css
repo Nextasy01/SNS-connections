@@ -1,0 +1,18 @@
+img.importToYouTube{
+    display: none;
+    cursor: pointer;
+}
+
+img.importToInsta{
+    display: none;
+    cursor: pointer;
+    padding-left: 10px;
+}
+
+.zoom {
+    transition: transform .2s; /* add a transition effect */
+  }
+  
+.zoom:hover {
+    transform: scale(1.1); /* zoom in by 10% when hovering */
+}

@@ -30,6 +30,12 @@ func NewRegisterInput(email, username, password string) RegisterInput {
 func (r *RegisterHandler) Register(c *gin.Context) {
 
 	var err error
+	// _, err = c.Cookie("token")
+	// if err == nil {
+	// 	c.SetCookie("error", "you need to log out first!", 10, "/view", c.Request.URL.Hostname(), false, true)
+	// 	c.Abort()
+	// 	return
+	// }
 
 	input := NewRegisterInput(c.PostForm("email"), c.PostForm("username"), c.PostForm("password"))
 

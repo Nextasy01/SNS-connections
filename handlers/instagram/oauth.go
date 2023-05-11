@@ -48,7 +48,7 @@ func (ih *InstagramAuthHandler) CreateAuth(c *gin.Context) {
 	params := url.Values{}
 
 	params.Set("client_id", app_id)
-	params.Set("redirect_uri", "http://localhost:9000/")
+	params.Set("redirect_uri", "http://localhost:9000/view/")
 	params.Set("scope", "instagram_basic,pages_show_list,pages_read_engagement,instagram_manage_insights")
 	params.Set("state", "instagram")
 
@@ -69,7 +69,7 @@ func (ih *InstagramAuthHandler) ExchangeToken(c *gin.Context, code <-chan string
 	temp := <-code
 	log.Println(temp)
 	params.Set("client_id", app_id)
-	params.Set("redirect_uri", "http://localhost:9000/")
+	params.Set("redirect_uri", "http://localhost:9000/view/")
 	params.Set("client_secret", app_secret)
 	params.Set("grant_type", "authorization_code")
 	params.Set("code", temp)

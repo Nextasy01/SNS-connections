@@ -12,8 +12,8 @@ func CheckGoogleAuth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		user_id, err := utils.ExtractTokenID(ctx)
 		if err != nil {
-			log.Println(err)
-			ctx.Next()
+			log.Println("Something went wrong with authentication token: ", err)
+			ctx.Abort()
 			return
 		}
 		google_acc, err := routes.DB.GetAccByUserId(user_id)

@@ -34,7 +34,7 @@ func (cuh *CurrentUserHandler) CurrentUser(c *gin.Context) {
 	}
 
 	if _, err := c.Cookie("username"); err != nil {
-		c.SetCookie("username", u.Username, 24*3600, "/", c.Request.URL.Hostname(), false, true)
+		c.SetCookie("username", u.Username, 24*3600, "/view", c.Request.URL.Hostname(), false, true)
 	}
 
 	if err := c.Query("code"); err != "" && strings.Contains(c.Query("state"), "youtube") {

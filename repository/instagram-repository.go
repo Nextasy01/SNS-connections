@@ -13,6 +13,7 @@ type InstagramRepository interface {
 	SaveInstaVideos(vid *[]entity.InstagramCandidate)
 	DeleteInstaVideo(vid entity.InstagramCandidate)
 	UpdateInstaVideo(vid entity.InstagramCandidate)
+	UpdateByVideoId(videoId string) error
 	GetInstaVideosByAcc(uid string) (*[]entity.InstagramCandidate, error)
 }
 
@@ -66,6 +67,14 @@ func (db *Database) DeleteInstaVideo(vid entity.InstagramCandidate) {
 func (db *Database) UpdateInstaVideo(vid entity.InstagramCandidate) {
 	db.connection.Save(&vid)
 }
+
+func (db *Database) UpdateByVideoId(videoId string) error {
+	if err := db.connection.Model(&entity.InstagramCandidate{}).Where("video_id = ?", videoId).Update("is_imported", true).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func (db *Database) GetInstaVideosByAcc(uid string) (*[]entity.InstagramCandidate, error) {
 	videos := []entity.InstagramCandidate{}
 	if err := db.connection.Where("creator_id = ?", uid).Find(&videos).Error; err != nil {

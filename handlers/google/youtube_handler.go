@@ -38,11 +38,13 @@ func (yt *YouTubeHandler) GetVideos(c *gin.Context) []entity.YoutubeCandidate {
 	}
 	acc, err := yt.gh.grepo.GetAccById(uid)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 
 	config, err := utils.NewConfig()
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 

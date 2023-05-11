@@ -42,6 +42,7 @@ func (ih *InstagramAuthHandler) GetVideos(c *gin.Context) []entity.InstagramCand
 	}
 	acc, err := ih.igrepo.GetInstaAccById(uid)
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 
@@ -52,6 +53,7 @@ func (ih *InstagramAuthHandler) GetVideos(c *gin.Context) []entity.InstagramCand
 
 	response, err := http.Get(location.RequestURI())
 	if err != nil {
+		log.Println(err)
 		return nil
 	}
 
@@ -74,6 +76,13 @@ func (ih *InstagramAuthHandler) GetVideos(c *gin.Context) []entity.InstagramCand
 	return videos
 }
 
+func (ih *InstagramAuthHandler) UpdateVideos(videoId string) error {
+	if err := ih.igrepo.UpdateByVideoId(videoId); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (ih *InstagramAuthHandler) SaveNewVideos(items VideoResponse, acc uuid.UUID) ([]entity.InstagramCandidate, error) {
 	videos := []entity.InstagramCandidate{}
 	videosFromDb, err := ih.igrepo.GetInstaVideosByAcc(acc.String())
@@ -87,12 +96,14 @@ func (ih *InstagramAuthHandler) SaveNewVideos(items VideoResponse, acc uuid.UUID
 		}
 
 		videos = append(videos, entity.InstagramCandidate{
-			Caption:   item.Caption,
-			MediaUrl:  item.MediaUrl,
-			Permalink: item.Permalink,
-			ShortCode: item.Shortcode,
-			VideoId:   item.ID,
-			CreatorId: acc,
+			Caption:             item.Caption,
+			MediaUrl:            item.MediaUrl,
+			Permalink:           item.Permalink,
+			ShortCode:           item.Shortcode,
+			VideoId:             item.ID,
+			IsImported:          false,
+			IsImportedToYouTube: false,
+			CreatorId:           acc,
 		})
 		if videos[i].ID, err = uuid.NewRandom(); err != nil {
 			log.Println(err)
@@ -109,12 +120,16 @@ func (ih *InstagramAuthHandler) SaveNewVideos(items VideoResponse, acc uuid.UUID
 		ih.igrepo.SaveInstaVideos(&videos)
 		return videos, nil
 	}
+
+	checkImports(&videos, videosFromDb)
+
 	log.Println("Filtering New Instagram videos and Database videos")
 	newVideos := difference(videos, *videosFromDb)
 
 	if len(newVideos) > 0 {
 		ih.igrepo.SaveInstaVideos(&newVideos)
 		videos = append(videos, newVideos...)
+		return videos, nil
 	}
 	return videos, nil
 }
@@ -131,4 +146,19 @@ func difference(fromAPI, fromDB []entity.InstagramCandidate) []entity.InstagramC
 		}
 	}
 	return diff
+}
+
+func checkImports(fromAPI, fromDB *[]entity.InstagramCandidate) {
+	DBvideos := make(map[string]bool, len(*fromAPI))
+	for _, x := range *fromDB {
+		DBvideos[x.VideoId] = x.IsImported
+	}
+	for i, x := range *fromAPI {
+		if _, ok := DBvideos[x.VideoId]; !ok {
+			continue
+		}
+		if DBvideos[x.VideoId] {
+			(*fromAPI)[i].IsImported = true
+		}
+	}
 }

@@ -53,6 +53,7 @@ func ExtractToken(c *gin.Context) string {
 	if len(strings.Split(bearerToken, " ")) == 2 {
 		return strings.Split(bearerToken, " ")[1]
 	}
+
 	return ""
 }
 
@@ -65,9 +66,11 @@ func ExtractTokenID(c *gin.Context) (string, error) {
 		}
 		return []byte("secret"), nil
 	})
+	//log.Println("Token was not found!?")
 	if err != nil {
 		return "", err
 	}
+	//log.Println("Trying to claim token")
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok && token.Valid {
 		uid, ok := claims["user_id"]

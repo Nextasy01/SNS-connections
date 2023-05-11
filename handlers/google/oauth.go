@@ -50,7 +50,7 @@ func (gh *GoogleAuthHandler) CreateAuth(c *gin.Context) {
 		ClientSecret: secret_key,
 		Scopes:       []string{"email", "profile", "https://www.googleapis.com/auth/youtube", "https://www.googleapis.com/auth/youtube.upload", "https://www.googleapis.com/auth/youtube.readonly"},
 		Endpoint:     google.Endpoint,
-		RedirectURL:  "http://localhost:9000",
+		RedirectURL:  "http://localhost:9000/view",
 	}
 
 	url := conf.AuthCodeURL("youtube", oauth2.AccessTypeOffline)
