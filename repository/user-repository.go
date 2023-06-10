@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"log"
 
 	"github.com/Nextasy01/SNS-connections/entity"
 	"github.com/Nextasy01/SNS-connections/utils"
@@ -11,6 +12,7 @@ import (
 type UserRepository interface {
 	SaveUser(user entity.User) error
 	DeleteUser(user entity.User)
+	UpdateUser(user entity.User) error
 	GetUserByID(uid string) (*entity.User, error)
 	LoginCheck(username, password string) (string, error)
 }
@@ -21,6 +23,14 @@ func NewUserRepository(db *Database) UserRepository {
 
 func (db *Database) SaveUser(user entity.User) error {
 	err := db.connection.Create(&user).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *Database) UpdateUser(user entity.User) error {
+	err := db.connection.Save(&user).Error
 	if err != nil {
 		return err
 	}
@@ -54,6 +64,12 @@ func (db *Database) LoginCheck(username, password string) (string, error) {
 }
 
 func VerifyPassword(password, hashedPassword string) error {
+	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	log.Println(string(hashed))
+	log.Println(hashedPassword)
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
 

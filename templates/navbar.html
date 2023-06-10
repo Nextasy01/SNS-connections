@@ -1,4 +1,4 @@
-<nav class="navbar sticky-top navbar-expand-xl navbar-light bg-light">
+<nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="/view">SNS</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,11 @@
             </ul>
           </li>
         </ul>
+        <div>
+          <figure class="m-0 px-2">
+            <img class="rounded-circle" src="{{ .ProfilePic }}" alt="ProfilePic" style="max-width: 32px; max-height: 32px;">
+          </figure>
+        </div>
         <div>{{ .username }}</div>
         <form id="logout_form" method="post" action="logout">
             <div class="d-grid gap-2 ms-3 mb-2 d-md-flex justify-content-md-end">

@@ -37,12 +37,25 @@ func (cuh *CurrentUserHandler) CurrentUser(c *gin.Context) {
 		c.SetCookie("username", u.Username, 24*3600, "/view", c.Request.URL.Hostname(), false, true)
 	}
 
+	if _, err := c.Cookie("profilepic"); err != nil {
+		c.SetCookie("profilepic", u.ProfilePic, 24*3600, "/view", c.Request.URL.Hostname(), false, true)
+	}
+
 	if err := c.Query("code"); err != "" && strings.Contains(c.Query("state"), "youtube") {
 		google.CodeCh <- c.Query("code")
 		google.UserCh <- u.ID
-		c.HTML(http.StatusAccepted, "index.html", gin.H{"google": "You authenticated your google account",
-			"username": u.Username, "isIndex": true})
+		u.ProfilePic = <-google.UserPicCh
 
+		err := cuh.urepo.UpdateUser(*u)
+		if err != nil {
+			log.Println("[ERROR] Couldn't update User's profile picture: ", err)
+		}
+
+		c.SetCookie("profilepic", u.ProfilePic, 24*3600, "/view", c.Request.URL.Hostname(), false, true)
+		c.HTML(http.StatusAccepted, "index.html", gin.H{"google": "You authenticated your google account",
+			"username": u.Username, "ProfilePic": u.ProfilePic, "isIndex": true})
+
+		close(google.UserPicCh)
 		close(google.CodeCh)
 		close(google.UserCh)
 
@@ -55,14 +68,14 @@ func (cuh *CurrentUserHandler) CurrentUser(c *gin.Context) {
 		instagram.InstaUserCh <- u.ID
 
 		c.HTML(http.StatusAccepted, "index.html", gin.H{"instagram": "You authenticated your instagram account",
-			"username": u.Username, "isIndex": true})
+			"username": u.Username, "ProfilePic": u.ProfilePic, "isIndex": true})
 		return
 	}
 
 	if msg, err := c.Cookie("error"); err == nil {
-		c.HTML(http.StatusOK, "index.html", gin.H{"username": u.Username, "error": msg, "isIndex": true})
+		c.HTML(http.StatusOK, "index.html", gin.H{"username": u.Username, "ProfilePic": u.ProfilePic, "error": msg, "isIndex": true})
 		return
 	}
 
-	c.HTML(http.StatusOK, "index.html", gin.H{"username": u.Username, "isIndex": true})
+	c.HTML(http.StatusOK, "index.html", gin.H{"username": u.Username, "ProfilePic": u.ProfilePic, "isIndex": true})
 }

@@ -69,7 +69,7 @@ func (db *Database) UpdateInstaVideo(vid entity.InstagramCandidate) {
 }
 
 func (db *Database) UpdateByVideoId(videoId string) error {
-	if err := db.connection.Model(&entity.InstagramCandidate{}).Where("video_id = ?", videoId).Update("is_imported", true).Error; err != nil {
+	if err := db.connection.Model(&entity.InstagramCandidate{}).Where("video_id = ?", videoId).Updates(entity.InstagramCandidate{IsImported: true, IsImportedToYouTube: true}).Error; err != nil {
 		return err
 	}
 	return nil
@@ -78,7 +78,7 @@ func (db *Database) UpdateByVideoId(videoId string) error {
 func (db *Database) GetInstaVideosByAcc(uid string) (*[]entity.InstagramCandidate, error) {
 	videos := []entity.InstagramCandidate{}
 	if err := db.connection.Where("creator_id = ?", uid).Find(&videos).Error; err != nil {
-		return &videos, err
+		return nil, err
 	}
 	return &videos, nil
 }

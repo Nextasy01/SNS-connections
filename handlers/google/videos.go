@@ -2,6 +2,7 @@ package google
 
 import (
 	"log"
+	"strings"
 	"time"
 
 	"github.com/Nextasy01/SNS-connections/entity"
@@ -70,13 +71,20 @@ func (yt *YouTubeHandler) GetVideos(c *gin.Context) []entity.YoutubeCandidate {
 
 	playlistResponse := playlistItemsList(service, []string{"snippet"}, channelList.Items[0].ContentDetails.RelatedPlaylists.Uploads)
 
+	// testVideos, err := filterShortVideos(channelList.Items[0].Id, service)
+	// if err != nil {
+	// 	log.Println(err)
+	// } else {
+	// 	log.Println(testVideos)
+	// }
+
 	if playlistResponse == nil {
 		log.Println("video retrieving error")
 		return nil
 	}
 
 	//c.HTML(http.StatusOK, "index.html", gin.H{"youtube_videos": "true", "username": uname, "videos": yt.SaveNewVideos(playlistResponse.Items, channelList.Items[0].Id, acc.ID)})
-	videos, err := yt.SaveNewVideos(playlistResponse.Items, channelList.Items[0].Id, acc.ID)
+	videos, err := yt.SaveNewVideos(playlistResponse.Items, channelList.Items[0].Id, acc.ID, service)
 	if err != nil {
 		return nil
 	}
@@ -94,7 +102,7 @@ func playlistItemsList(service *youtube.Service, part []string, playlistId strin
 	return response
 }
 
-func (yt *YouTubeHandler) SaveNewVideos(items []*youtube.PlaylistItem, channelId string, accId uuid.UUID) ([]entity.YoutubeCandidate, error) {
+func (yt *YouTubeHandler) SaveNewVideos(items []*youtube.PlaylistItem, channelId string, accId uuid.UUID, service *youtube.Service) ([]entity.YoutubeCandidate, error) {
 	videos := []entity.YoutubeCandidate{}
 	videosFromDb, err := yt.ytrepo.GetVideosByAcc(accId.String())
 	if err != nil {
@@ -102,12 +110,23 @@ func (yt *YouTubeHandler) SaveNewVideos(items []*youtube.PlaylistItem, channelId
 		return nil, err
 	}
 	for i, item := range items {
+		call := service.Videos.List([]string{"contentDetails"}).Id(item.Snippet.ResourceId.VideoId)
+		resp, err := call.Do()
+		if err != nil {
+			log.Println("Couldn't get the duration of the video: ", err)
+		} else {
+			if strings.Contains(resp.Items[0].ContentDetails.Duration, "H") || strings.Contains(resp.Items[0].ContentDetails.Duration, "M") {
+				continue
+			}
+		}
 		videos = append(videos, entity.YoutubeCandidate{
-			Title:       item.Snippet.Title,
-			Description: item.Snippet.Description,
-			VideoId:     item.Snippet.ResourceId.VideoId,
-			ChannelId:   channelId,
-			CreatorId:   accId,
+			Title:                 item.Snippet.Title,
+			Description:           item.Snippet.Description,
+			VideoId:               item.Snippet.ResourceId.VideoId,
+			IsImported:            false,
+			IsImportedToInstagram: false,
+			ChannelId:             channelId,
+			CreatorId:             accId,
 		})
 		if videos[i].ID, err = uuid.NewRandom(); err != nil {
 			return nil, err
@@ -116,13 +135,32 @@ func (yt *YouTubeHandler) SaveNewVideos(items []*youtube.PlaylistItem, channelId
 			return nil, err
 		}
 	}
+
+	if len(*videosFromDb) == 0 {
+		log.Println("Saving new YouTube Videos")
+		yt.ytrepo.SaveVideos(&videos)
+		return videos, nil
+	}
+
+	checkImports(&videos, videosFromDb)
+
+	log.Println("Filtering New YouTube videos and Database videos")
 	newVideos := difference(videos, *videosFromDb)
 
 	if len(newVideos) > 0 {
 		yt.ytrepo.SaveVideos(&newVideos)
+		videos = append(videos, newVideos...)
+		return videos, nil
 	}
 
 	return videos, nil
+}
+
+func (yt *YouTubeHandler) UpdateVideos(videoId string) error {
+	if err := yt.ytrepo.UpdateByYouTubeVideoId(videoId); err != nil {
+		return err
+	}
+	return nil
 }
 
 func difference(fromAPI, fromDB []entity.YoutubeCandidate) []entity.YoutubeCandidate {
@@ -137,4 +175,19 @@ func difference(fromAPI, fromDB []entity.YoutubeCandidate) []entity.YoutubeCandi
 		}
 	}
 	return diff
+}
+
+func checkImports(fromAPI, fromDB *[]entity.YoutubeCandidate) {
+	DBvideos := make(map[string]bool, len(*fromAPI))
+	for _, x := range *fromDB {
+		DBvideos[x.VideoId] = x.IsImported
+	}
+	for i, x := range *fromAPI {
+		if _, ok := DBvideos[x.VideoId]; !ok {
+			continue
+		}
+		if DBvideos[x.VideoId] {
+			(*fromAPI)[i].IsImported = true
+		}
+	}
 }

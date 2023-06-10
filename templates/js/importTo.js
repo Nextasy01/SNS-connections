@@ -13,7 +13,8 @@ function getTheLink(sns){
 
 function getTheVideos(sns){
     let result = {}
-    result.sns = sns
+    result.from_sns = sns === 'toggleYouTube' ? 'YouTube' : 'Instagram'
+    result.to_sns = result.from_sns === 'YouTube' ? 'Instagram' : 'YouTube'
     result.url = []
     result.title = []
     result.videoId = []
@@ -59,24 +60,14 @@ function getTheTitle(sns){
     return result
 }
 
-function imporToDrive(sns){
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/view/google/import");
-    xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8")
+function imporToDrive(sns, popoverEl){
     console.log(sns)
-    // const links = getTheLink(sns);
-    // const titles = getTheTitle(sns);
-    // const jsonBody = {};
-    // jsonBody.url = links
-    // jsonBody.title = titles
-    // console.log(jsonBody)
-    // fetch("/google/import", {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //         "Authorization": `Bearer ${token}`
-    //     },
-    //     body: JSON.stringify(getTheVideos(sns))
-    // })
-    xhr.send(JSON.stringify(getTheVideos(sns)));
+    fetch("/view/google/import", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(getTheVideos(sns))
+    })
+    popoverEl.hide();
 }

@@ -7,6 +7,7 @@ type YouTubeRepository interface {
 	SaveVideos(vid *[]entity.YoutubeCandidate)
 	DeleteVideo(vid entity.YoutubeCandidate)
 	UpdateVideo(vid entity.YoutubeCandidate)
+	UpdateByYouTubeVideoId(videoId string) error
 	GetVideosByAcc(uid string) (*[]entity.YoutubeCandidate, error)
 }
 
@@ -29,10 +30,17 @@ func (db *Database) UpdateVideo(vid entity.YoutubeCandidate) {
 	db.connection.Save(&vid)
 }
 
+func (db *Database) UpdateByYouTubeVideoId(videoId string) error {
+	if err := db.connection.Model(&entity.YoutubeCandidate{}).Where("video_id = ?", videoId).Updates(entity.YoutubeCandidate{IsImported: true, IsImportedToInstagram: true}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func (db *Database) GetVideosByAcc(uid string) (*[]entity.YoutubeCandidate, error) {
 	videos := []entity.YoutubeCandidate{}
 	if err := db.connection.Where("creator_id = ?", uid).Find(&videos).Error; err != nil {
-		return &videos, err
+		return nil, err
 	}
 
 	return &videos, nil

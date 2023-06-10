@@ -21,6 +21,7 @@ func main() {
 	server.Static("/css", "./templates/css")
 	server.Static("/view/js", "./templates/js")
 	server.Static("/view/svg", "./templates/svg")
+	server.Static("/svg", "./templates/svg")
 
 	server.LoadHTMLGlob("templates/*.html")
 

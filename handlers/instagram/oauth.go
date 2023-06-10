@@ -49,7 +49,7 @@ func (ih *InstagramAuthHandler) CreateAuth(c *gin.Context) {
 
 	params.Set("client_id", app_id)
 	params.Set("redirect_uri", "http://localhost:9000/view/")
-	params.Set("scope", "instagram_basic,pages_show_list,pages_read_engagement,instagram_manage_insights")
+	params.Set("scope", "instagram_basic,pages_show_list,pages_read_engagement,instagram_manage_insights,instagram_content_publish")
 	params.Set("state", "instagram")
 
 	location := url.URL{Path: "https://www.facebook.com/v16.0/dialog/oauth", RawQuery: params.Encode()}

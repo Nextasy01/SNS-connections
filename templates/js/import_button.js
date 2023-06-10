@@ -9,8 +9,7 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 
 var closePop = true;
 document.body.addEventListener('mousedown', function(event) {
-  if (event.target.classList.contains('popover-body') || event.target.classList.contains('importToYouTube') ||
-  event.target.classList.contains('importToInsta')) {
+  if (event.target.classList.contains('popover-body')) {
     closePop = false;
     console.log(event.target)
   } else {
@@ -92,7 +91,7 @@ toggleContainers.forEach(container => {
   selectButton.addEventListener('click', (e) =>{
     const popoverEl = bootstrap.Popover.getInstance(selectButton);
     console.log("Import clicked");
-
+    console.log(popoverEl)
     popoverEl.tip.id = container.id === 'toggleYouTube' ? 'popYouTube' : 'popInsta';
     console.log(popoverEl.tip.id);
     console.log(popoverEl.tip.childNodes[1])
@@ -108,14 +107,14 @@ toggleContainers.forEach(container => {
         console.log("In importYT popup, displaying Insta btn")
         el.lastChild.style.display = 'block'
         el.addEventListener('click', () => {
-          imporToDrive('toggleYouTube')
+          imporToDrive('toggleYouTube', popoverEl)
         })
       }
       if (popoverEl.tip.id === 'popInsta' ){
         console.log("In importInsta popup, displaying YT btn")
         el.firstChild.style.display = 'block'
         el.addEventListener('click', () => {
-          imporToDrive('toggleInsta')
+          imporToDrive('toggleInsta', popoverEl)
         })
       }
     })
@@ -123,6 +122,7 @@ toggleContainers.forEach(container => {
 
   selectButton.addEventListener('blur', (e) => {
     if(closePop){
+      console.log("focusing something else - hiding popover")
       const popoverEl = bootstrap.Popover.getInstance(selectButton);
       popoverEl.hide()
     }
@@ -132,6 +132,7 @@ toggleContainers.forEach(container => {
   });
   selectButton.addEventListener('focus', (e) => {
     if(closePop){
+      console.log("focusing button - showing popover")
       const popoverEl = bootstrap.Popover.getInstance(selectButton);
       popoverEl.show()
     }

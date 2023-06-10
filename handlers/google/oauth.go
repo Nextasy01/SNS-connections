@@ -17,6 +17,7 @@ import (
 
 var CodeCh = make(chan string)
 var UserCh = make(chan uuid.UUID)
+var UserPicCh = make(chan string)
 
 type GoogleAuthHandler struct {
 	grepo repository.GoogleRepository
@@ -94,6 +95,8 @@ func (gh *GoogleAuthHandler) ExchangeToken(c *gin.Context, code <-chan string, u
 	acc.Email = userInfo.Email
 	acc.Username = userInfo.Name
 	acc.ProfilePic = userInfo.Picture
+
+	UserPicCh <- acc.ProfilePic
 
 	gh.grepo.SaveAcc(*acc)
 

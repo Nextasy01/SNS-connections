@@ -1,11 +1,48 @@
 {{ template "header.html" }}
-{{ template "navbar.html"}}
+{{ template "navbar.html" . }}
 
-<h2>Your Google Credentials</h2>
-<body>
-    <div>
-        <img src="{{ .ProfilePic }}">
-        <p> {{ .Username }} </p>
-        <p> {{ .Email }} </p>
+<div class="modal" id="warningGoogle" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Revoking Access Confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to revoke access to your google account? All your YouTube videos that you imported here will be <strong>deleted</strong>! Note that it will not affect videos in your YouTube channel.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <form action="/view/google/revoke" method="post">
+             <button type="submit" class="btn btn-danger" data-bs-dismiss="modal" id="revokeBtn">Revoke</button>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
+
+<div class="container-fluid pt-3">
+    <div class="row d-flex flex-column justify-content-center align-items-center">
+        <div class="col-3 d-flex flex-column justify-content-center align-items-center border border-3" style="min-width: 300px;">
+            <h3 class="text-light">Your Google Credentials</h2>
+            <figure>
+                <img src="{{ .GoogleProfilePic }}" class="rounded-circle" alt="Profile Picture">
+            </figure>
+            <p class="text-light text-start">Full Name: {{ .GoogleUsername }}</p>
+            <p class="text-light text-start">Email: {{ .Email }} </p>
+        </div>
+        <div class="col-3 pt-3">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#warningGoogle" class="btn btn-outline-danger" style="position: relative; left: 65%">Revoke Access
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const myModal = document.getElementById('warningGoogle');
+    myModal.addEventListener('shown.bs.modal', function () {
+        myModal.focus();
+    });
+</script>
+
 {{ template "footer.html"}}

@@ -1,25 +1,29 @@
 {{ template "header.html" }}
 {{ template "navbar.html" . }}
-
     {{ if .error }}
-   <h2>{{ .error }}</h2> 
+    <script>
+      alert(`{{ .error }}`)
+    </script>
+   <!-- <h2>{{ .error }}</h2>  -->
    {{ end }}
    {{ if .isIndex}}
    <div class="d-flex flex-column align-items-center" style="margin-top: 15%;">
     <h2 class="text-white">Connect your Google and Facebook accounts to access your videos from YouTube and Instagram</h2>
     <div class="row" style="margin-top: 3%;">
       <div class="col">
-      <form method="get" action="/instagram/auth">
-        <button type="submit">
-          <img src="svg/facebook_button.png" alt="Connect with Facebook" width="380" height="92">
+      <form method="get" action="/view/instagram/auth">
+        <button type="submit" class="btn btn-outline-light" style="text-transform:none; white-space: nowrap;">
+          <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Facebook sign-in" src="svg/f_logo_RGB-Blue_144.png" />
+          Continue with Facebook
         </button>
       </form>
     </div>
     <div class="col">
-      <form method="get" action="/google/authg">
-        <button type="submit">
-          <img src="svg/google_button.png" alt="Connect with Google">
-        </button>
+      <form method="get" action="/view/google/authg">
+          <button type="submit" class="btn btn-outline-light" style="text-transform:none">
+            <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+            Continue with Google
+          </button>
       </form> 
     </div>
     </div>

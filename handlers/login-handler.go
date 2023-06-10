@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"net/url"
 
@@ -38,6 +39,7 @@ func (l *LoginHandler) Login(c *gin.Context) {
 	input := NewLoginInput(c.PostForm("username"), c.PostForm("password"))
 
 	if err := c.ShouldBind(&input); err != nil {
+		log.Println("Wrong Credentials?", err)
 		c.HTML(http.StatusBadRequest, "login.html", gin.H{"error": err})
 		return
 	}
@@ -46,10 +48,11 @@ func (l *LoginHandler) Login(c *gin.Context) {
 
 	u.Username = input.Username
 	u.Password = input.Password
-
+	log.Println(input.Username + "\t" + input.Password)
 	token, err := l.urepo.LoginCheck(u.Username, u.Password)
 
 	if err != nil {
+		log.Println("Wrong Credentials?", err)
 		c.HTML(http.StatusBadRequest, "login.html", gin.H{"error": "username or password is incorrect"})
 		return
 	}

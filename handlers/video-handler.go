@@ -17,6 +17,12 @@ func GetVideos(ctx *gin.Context, youtubeHandler *google.YouTubeHandler, instagra
 		log.Println("User not found!?")
 		return
 	}
+
+	profile_pic, err := ctx.Cookie("profilepic")
+	if err != nil {
+		log.Println("[ERROR] No profile picture was found")
+	}
+
 	videos_ch := make(chan interface{})
 	break_ch := make(chan struct{})
 
@@ -53,6 +59,6 @@ loop:
 	}
 
 	ctx.HTML(http.StatusOK, "index.html", gin.H{
-		"youtube_videos": youtube_videos, "instagram_videos": instagram_videos, "username": uname,
+		"youtube_videos": youtube_videos, "instagram_videos": instagram_videos, "ProfilePic": profile_pic, "username": uname,
 	})
 }

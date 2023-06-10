@@ -22,7 +22,7 @@ func ConnectToDB() *gorm.DB {
 	if err != nil {
 		panic("faild to connect to database")
 	}
-	db.AutoMigrate(&entity.User{}, &entity.GoogleAccount{}, &entity.InstagramAccount{}, &entity.YoutubeCandidate{}, &entity.InstagramCandidate{})
+	db.AutoMigrate(&entity.User{}, &entity.GoogleAccount{}, &entity.InstagramAccount{}, &entity.YoutubeCandidate{}, &entity.InstagramCandidate{}, &entity.Post{})
 	db.Exec("PRAGMA foreign_keys = ON")
 	return db
 }
