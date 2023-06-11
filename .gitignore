@@ -1,6 +1,4 @@
 .env
 key.json
-go.sum
-go.mod
 .gitignore
 .vscode
