@@ -21,7 +21,7 @@ type User struct {
 func NewUser() *User {
 	return &User{}
 }
-func (u *User) BeforeSave(db *gorm.DB) error {
+func (u *User) BeforeCreate(db *gorm.DB) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
