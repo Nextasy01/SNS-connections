@@ -36,6 +36,17 @@ func (g *GoogleEnvReader) GetAppEnv() (string, error) {
 
 }
 
+func (g *GoogleEnvReader) GetProdRedirectUrlEnv() (string, error) {
+	envFile, err := godotenv.Read(".env")
+
+	if err != nil {
+		return "", err
+	}
+
+	return envFile["PROD_REDIRECT_URI"], nil
+
+}
+
 func NewToken(acc *entity.GoogleAccount) *oauth2.Token {
 	token := new(oauth2.Token)
 	token.AccessToken = acc.AccessToken

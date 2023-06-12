@@ -47,7 +47,12 @@ func (gh *GoogleAuthHandler) CreateAuth(c *gin.Context) {
 	}
 
 	app_env, err := g.GetAppEnv()
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 
+	prod_redirect_uri, err := g.GetProdRedirectUrlEnv()
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -58,7 +63,7 @@ func (gh *GoogleAuthHandler) CreateAuth(c *gin.Context) {
 	if app_env == "local" {
 		redirect_uri = "http://localhost:9000/view"
 	} else {
-		redirect_uri = "https://sns-service.onrender.com/view"
+		redirect_uri = prod_redirect_uri
 	}
 	conf := &oauth2.Config{
 		ClientID:     client_id,

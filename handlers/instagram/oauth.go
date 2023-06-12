@@ -52,10 +52,16 @@ func (ih *InstagramAuthHandler) CreateAuth(c *gin.Context) {
 		return
 	}
 
+	prod_redirect_uri, err := f.GetProdRedirectUrlEnv()
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
 	if app_env == "local" {
 		redirect_uri = "http://localhost:9000/view/"
 	} else {
-		redirect_uri = "https://sns-service.onrender.com/view/"
+		redirect_uri = prod_redirect_uri
 	}
 
 	params := url.Values{}

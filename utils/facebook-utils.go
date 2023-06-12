@@ -26,3 +26,14 @@ func (f *FacebookEnvReader) GetAppEnv() (string, error) {
 	return envFile["APP_ENV"], nil
 
 }
+
+func (f *FacebookEnvReader) GetProdRedirectUrlEnv() (string, error) {
+	envFile, err := godotenv.Read(".env")
+
+	if err != nil {
+		return "", err
+	}
+
+	return envFile["PROD_REDIRECT_URI"], nil
+
+}
