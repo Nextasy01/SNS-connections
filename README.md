@@ -20,3 +20,7 @@ I used Gin framework for backend with simple local database SQLite. I'm not usin
 ![Videos page_3](https://i.imgur.com/Ks5clZu.png)
 ![Login page](https://i.imgur.com/wdQIoPz.png)
 ![Registration page](https://i.imgur.com/ncrKrOW.png)
+
+## Demo videos(download links)
+[Connecting google account and retrieving videos from your youtube channel](https://cdn-141.anonfiles.com/L0lav1w9zf/cc6fbc1b-1686566383/connect+youtube.mp4)
+[Connecting facebook account and retrieving videos from your instagram account](https://cdn-149.anonfiles.com/Oaldv6wbz4/82f57892-1686566513/connect+instagram.mp4)
