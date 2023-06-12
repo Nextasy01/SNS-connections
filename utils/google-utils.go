@@ -10,6 +10,7 @@ import (
 
 type EnvReader interface {
 	ReadFromEnv() (string, string, error)
+	GetAppEnv() (string, error)
 }
 
 type GoogleEnvReader struct{}
@@ -22,6 +23,17 @@ func (g *GoogleEnvReader) ReadFromEnv() (string, string, string, string, error) 
 	}
 
 	return envFile["Google_Client_id"], envFile["Google_Secret_key"], envFile["Google_Service_Account"], envFile["Google_Service_Account_Private_Key"], nil
+}
+
+func (g *GoogleEnvReader) GetAppEnv() (string, error) {
+	envFile, err := godotenv.Read(".env")
+
+	if err != nil {
+		return "", err
+	}
+
+	return envFile["APP_ENV"], nil
+
 }
 
 func NewToken(acc *entity.GoogleAccount) *oauth2.Token {

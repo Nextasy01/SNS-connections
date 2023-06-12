@@ -20,6 +20,7 @@ var (
 	InstaUserCh   = make(chan uuid.UUID)
 	InstaUserInfo = make(chan string)
 	tokenCh       = make(chan string)
+	redirect_uri  = ""
 )
 
 type InstagramAuthHandler struct {
@@ -39,16 +40,28 @@ func NewInstagramHandler(ig repository.InstagramRepository) InstagramAuthHandler
 func (ih *InstagramAuthHandler) CreateAuth(c *gin.Context) {
 	f := new(utils.FacebookEnvReader)
 	app_id, app_secret, err := f.ReadFromEnv()
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	app_env, err := f.GetAppEnv()
 
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
+	if app_env == "local" {
+		redirect_uri = "http://localhost:9000/view/"
+	} else {
+		redirect_uri = "https://sns-service.onrender.com/view/"
+	}
+
 	params := url.Values{}
 
 	params.Set("client_id", app_id)
-	params.Set("redirect_uri", "http://localhost:9000/view/")
+	params.Set("redirect_uri", redirect_uri)
 	params.Set("scope", "instagram_basic,pages_show_list,pages_read_engagement,instagram_manage_insights,instagram_content_publish")
 	params.Set("state", "instagram")
 
@@ -69,7 +82,7 @@ func (ih *InstagramAuthHandler) ExchangeToken(c *gin.Context, code <-chan string
 	temp := <-code
 	log.Println(temp)
 	params.Set("client_id", app_id)
-	params.Set("redirect_uri", "http://localhost:9000/view/")
+	params.Set("redirect_uri", redirect_uri)
 	params.Set("client_secret", app_secret)
 	params.Set("grant_type", "authorization_code")
 	params.Set("code", temp)

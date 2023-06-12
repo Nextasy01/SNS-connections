@@ -46,12 +46,26 @@ func (gh *GoogleAuthHandler) CreateAuth(c *gin.Context) {
 		return
 	}
 
+	app_env, err := g.GetAppEnv()
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	redirect_uri := ""
+
+	if app_env == "local" {
+		redirect_uri = "http://localhost:9000/view"
+	} else {
+		redirect_uri = "https://sns-service.onrender.com/view"
+	}
 	conf := &oauth2.Config{
 		ClientID:     client_id,
 		ClientSecret: secret_key,
 		Scopes:       []string{"email", "profile", "https://www.googleapis.com/auth/youtube", "https://www.googleapis.com/auth/youtube.upload", "https://www.googleapis.com/auth/youtube.readonly"},
 		Endpoint:     google.Endpoint,
-		RedirectURL:  "http://localhost:9000/view",
+		RedirectURL:  redirect_uri,
 	}
 
 	url := conf.AuthCodeURL("youtube", oauth2.AccessTypeOffline)
@@ -66,7 +80,7 @@ func (gh *GoogleAuthHandler) ExchangeToken(c *gin.Context, code <-chan string, u
 
 	tok, err := conf.Exchange(c, <-code)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "где токен, дебил"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "token was not found"})
 		return
 	}
 

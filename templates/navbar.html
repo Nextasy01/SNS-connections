@@ -24,11 +24,13 @@
             </ul>
           </li>
         </ul>
+        {{ if .ProfilePic }}
         <div>
           <figure class="m-0 px-2">
             <img class="rounded-circle" src="{{ .ProfilePic }}" alt="ProfilePic" style="max-width: 32px; max-height: 32px;">
           </figure>
         </div>
+        {{ end }}
         <div>{{ .username }}</div>
         <form id="logout_form" method="post" action="logout">
             <div class="d-grid gap-2 ms-3 mb-2 d-md-flex justify-content-md-end">

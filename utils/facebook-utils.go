@@ -15,3 +15,14 @@ func (f *FacebookEnvReader) ReadFromEnv() (string, string, error) {
 
 	return envFile["Facebook_APP_id"], envFile["Facebook_APP_secret"], nil
 }
+
+func (f *FacebookEnvReader) GetAppEnv() (string, error) {
+	envFile, err := godotenv.Read(".env")
+
+	if err != nil {
+		return "", err
+	}
+
+	return envFile["APP_ENV"], nil
+
+}
