@@ -11,3 +11,12 @@ TikTok API requires my web-app to be hosted somewhere, right now I'm not plannin
 
 ## Tech
 I used Gin framework for backend with simple local database SQLite. I'm not using any frontend frameworks since I just wanted to practise and improve my Go skills. Though, I added some simple HTML, CSS(Bootstrap) and also pure JavaScript for functionality, but they are in horrible state right now(just look at the code), so I plan to improve them and make pages halfway decent at least.
+
+## Screenshots
+
+![Home page](https://i.imgur.com/I8MkqGb.png)
+![Videos page_1](https://i.imgur.com/zFMG0L2.png)
+![Videos page_2](https://i.imgur.com/XZcVKWt.png)
+![Videos page_3](https://i.imgur.com/Ks5clZu.png)
+![Login page](https://i.imgur.com/wdQIoPz.png)
+![Registration page](https://i.imgur.com/ncrKrOW.png)
